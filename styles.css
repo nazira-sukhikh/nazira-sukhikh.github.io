@@ -1,0 +1,1024 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --heaven-blue-top: #E6F3FB; 
+    --heaven-blue-bottom: #CBE3F5;
+    --cloud-white: #ffffff;
+    --text-dark: #2C3E50;
+    --text-light: #5A6A7A;
+    --menu-bg: #FCFCFA;
+}
+
+html {
+    scroll-behavior: smooth; 
+}
+
+body {
+    font-family: Gabriela, serif;
+    background-color: #f4f7f6;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+}
+
+/* ====================================================
+   0. START FRONTGROUND
+  ===================================================== */
+
+/* Hiding checkbox from the user completely */
+
+#welcome-overlay-toggle {
+    display: none;
+}
+    
+/* Fullscreen for half transparent layer */
+.welcome-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(15, 15, 20, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;                        
+    cursor: pointer;                  
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.welcome-text-container {
+    text-align: center;
+    max-width: 600px;
+    width: 90%;
+    padding: 20px;
+}
+
+.welcome-text-container h2 {
+    font-family: 'Caveat', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    color: #ffffff;
+    margin: 0 0 20px 0;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.6), 0 0 30px rgba(255, 255, 255, 0.2);
+}
+
+.welcome-text-container p {
+    font-family: 'Caveat', cursive;
+    font-size: clamp(1.4rem, 4vw, 2rem);
+    margin: 0;
+    color: #ffd700;
+    opacity: 0.9;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* CSS MAGIC: If checkbox isn't active (user clicked on it), we hide it */
+#welcome-overlay-toggle:not(:checked) ~ .welcome-overlay {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+/* ====================================================
+   1. HOME PAGE: COVER NAVIGATION (DESKTOP)
+   ==================================================== */
+#cover-nav {
+    display: flex;
+    justify-content: center; /* Horizontally centered */
+    align-items: center;     /* Vertically centered */
+    width: auto;
+    height: 100vh;
+    background-color: #000;
+    overflow: hidden;
+}
+
+.photo-container {
+    position: relative;
+    max-width: 90%;
+    max-height: 90%;
+    aspect-ratio: 3840 / 2728;
+}
+
+/* main photo darkening */
+.main-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Image shrinks without losing proportions */
+    display: block;
+    filter: brightness(0.3);
+    border-radius: 10px;
+}
+
+/* Hidden tech SVG layer extended to the image size */
+.svg-shapes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Cut layer inside SVG */
+.bright-layer {
+  opacity: 0;
+  pointer-events: none; /* Let the mouse go through */
+  transition: opacity 0.3s ease;
+  filter: brightness(1);
+}
+
+/* Character pencil over */
+.interactive-zone {
+  fill: transparent;         
+  stroke: #fff;           
+  stroke-width: 10px;        
+  stroke-linejoin: round;    
+  stroke-linecap: round;     
+  opacity: 0;                
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+/* Any group <g class="character-group"> 
+   enables bright layer and penciling over */
+
+.character-group:hover .bright-layer,
+.character-group:hover .interactive-zone {
+  opacity: 1;
+}
+
+/* Hiding hint by default */
+.character-group .tooltip-html {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(55px); /* Going down a bit */
+  transition: all 0.3s ease-in;
+  
+  /* Appearance */
+  display: inline-block;
+  background-color: rgba(255, 255, 255, 0.65);
+  color: #000;
+  padding: 30px 45px;
+  border-radius: 20px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+  font-size: 60px;
+  white-space: nowrap;
+  width: max-content;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* On hover, showing all interactive group of characters */
+.character-group:hover .tooltip-html {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0); /* Smooth hint appearing */
+}
+
+/* No cracking of the mouce */
+.tooltip-container {
+  pointer-events: none;
+}
+
+/* ====================================================
+   2. MENU (STANDARD HEADER) (MOBILE)
+   ==================================================== */
+#header-mobile {
+    display: none;
+}
+
+/* ====================================================
+   3. MAIN SECTIONS (Scrollable Content)
+   ==================================================== */
+section:not(#cover-nav) {
+    min-height: 100vh;
+    padding: 80px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.mobile-front, .mobile-footer {
+    display: none; 
+}
+
+/* The div containing the 2 divs */
+.story-container {
+    display: flex;
+    flex-direction: row;       /* Video left, text right */
+    align-items: center;       /* Centers items vertically relative to each other */
+    justify-content: center;   /* Centers the whole block horizontally */
+    gap: 50px;
+    width: 100%;
+    max-width: 1600px;
+    z-index: 10;               /* Ensures content is above absolute backgrounds (like asteroids) */
+}
+
+.story-text {
+    width: clamp(200px, 80vw, 700px);
+    text-align: left;          /* Clean readability on the right side */
+}
+
+/* Ensure text hierarchy retains original styling */
+.story-text h2, .story-text p {
+    -webkit-user-select: none; /* Safari, Chrome */
+    -moz-user-select: none;    /* Firefox */
+    -ms-user-select: none;     /* IE/Edge */
+    user-select: none;         /* Standard */
+    -webkit-touch-callout: none;
+}
+
+.story-text h2 {
+    font-size: clamp(1rem, 2vw + 1rem, 3rem);
+    margin-bottom: 15px;
+}
+.story-text p {
+    font-size: clamp(1rem, 2vw + 0.5rem, 1.8rem);
+    margin-bottom: 30px;
+}
+
+/* Blob wrapping */
+.blob-wrapper {
+  width: clamp(200px, 30vw, 500px);
+  height: auto;
+  position: relative;
+  overflow: hidden; /* Cuts everything that is abroad */
+  border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; 
+  animation: morphing 5s ease infinite;
+  will-change: border-radius;
+  backface-visibility: hidden;
+  pointer-events: none;
+}
+
+.blob-wrapper video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+@keyframes morphing {
+  0% {
+    border-radius: 60% 45% 45% 65% / 60% 45% 65% 45%;
+  }
+  25% {
+    border-radius: 50% 55% 55% 50% / 55% 50% 50% 55%;
+  }
+  50% {
+    border-radius: 65% 45% 45% 60% / 60% 45% 60% 45%;
+  }
+  75% {
+    border-radius: 55% 55% 60% 50% / 50% 55% 50% 55%;
+  }
+  100% {
+    border-radius: 60% 45% 45% 65% / 60% 45% 65% 45%;
+  }
+}
+
+.buy {
+    background-color: #dddddd;
+}
+.buy a {
+    color: #3498db;
+    font-weight: bold;
+}
+
+/* BACKGROUNDS */
+
+/* ==========================================
+   4.1. SPACE + STARS: DREAM-STORY
+   ========================================== */
+#dream-story {
+  position: relative; 
+  overflow: hidden;    
+  min-height: 100vh;
+  background-color: #050515;
+  background-image: 
+    /* Small white stars */
+    radial-gradient(1.5px 1.5px at 5% 15%, #ffffff, transparent),
+    radial-gradient(1.5px 1.5px at 15% 45%, #ffffff, transparent),
+    radial-gradient(2px 2px at 35% 20%, #ffffff, transparent),
+    radial-gradient(1.5px 1.5px at 55% 75%, #ffffff, transparent),
+    radial-gradient(1.5px 1.5px at 85% 30%, #ffffff, transparent),
+    
+    /* Big bright stars */
+    radial-gradient(3.5px 3.5px at 10% 30%, rgba(255,255,255,1), transparent),
+    radial-gradient(4.5px 4.5px at 70% 60%, rgba(210,230,255,1), transparent),
+    radial-gradient(3.5px 3.5px at 90% 25%, rgba(255,255,255,1), transparent),
+
+    /* Space foggins */
+    radial-gradient(circle at 80% 20%, rgba(100, 50, 150, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 20% 80%, rgba(50, 80, 150, 0.15) 0%, transparent 60%);
+
+  /* Consistency on any screen */
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+#dream-story .story-text h2 {
+    color: #3f648a;
+}
+
+#dream-story .story-text p {
+    color: #555;
+}
+
+/* ==========================================
+   FIRST ASTEROID (BIG) ALONE
+   ========================================== */
+#dream-story::before {
+  content: "";
+  position: absolute;
+  top: 20%; 
+  left: 70%;
+  width: 160px;
+  height: 150px;
+  z-index: 1;
+  background: radial-gradient(circle at 30% 30%, #3a3642 0%, #1f1d24 80%);
+  border-radius: 48% 52% 40% 60% / 55% 45% 55% 45%; 
+  animation: rotateClockwise 15s linear infinite;
+}
+
+/* ==========================================
+   SECOND ASTEROID (SMALL)
+   ========================================== */
+#dream-story::after {
+  content: "";
+  position: absolute;
+  top: 65%;
+  left: 15%;
+  width: 45px;
+  height: 50px;
+  z-index: 1;
+  background: radial-gradient(circle at 30% 30%, #4a4a5a 0%, #2b2b36 80%);
+  border-radius: 40% 60% 50% 50% / 60% 40% 60% 40%;
+  animation: rotateCounterClockwise 12s linear infinite;
+}
+
+/* ==========================================
+   ANIMATIONS FOR ASTEROIDS
+   ========================================== */
+@keyframes rotateClockwise {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg); 
+  }
+}
+
+@keyframes rotateCounterClockwise {
+  from {
+    transform: rotate(360deg);
+  }
+  to {
+    transform: rotate(0deg); 
+  }
+}
+
+/* ==========================================
+   4.2. PSYCHO BACKGROUND
+   ========================================== */
+#psycho-story {
+    min-height: 100vh;
+    background-color: #dcd4c6;
+    background-image: 
+        radial-gradient(circle at center, transparent 30%, rgba(70, 60, 50, 0.3) 110%),
+        repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(0, 0, 0, 0.015) 2px, rgba(0, 0, 0, 0.015) 4px);
+    color: #1a1a1a;
+    line-height: 1.6;
+    letter-spacing: 0.3px;
+}
+
+#psycho-story .story-text h2 {
+    color: rgba(87, 25, 0, 0.5);
+}
+
+#psycho-story .story-text p {
+    color: rgba(27, 8, 0, 0.8);
+}
+
+/* ==========================================
+   4.3. MOTHER'S ARMCHAIR BACKGROUND
+   ========================================== */
+#armchair-story {
+    position: relative;
+    min-height: 100vh;
+    background-color: #1a0900; 
+    background-image: radial-gradient(circle at center, transparent 30%, rgba(0, 0, 0, 0.95) 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+#armchair-story::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 60vmin; 
+    height: 60vmin;
+    margin-top: -30vmin;
+    margin-left: -30vmin;
+    background: #000000;
+    border: 3px solid transparent; 
+    z-index: 0;
+    pointer-events: none;
+    animation: shiftingAbyss 15s ease-in-out infinite alternate;
+}
+
+@keyframes shiftingAbyss {
+    0% {
+        border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+        transform: translate(0, 0) scale(1);
+        filter: blur(60px);
+        border-color: rgba(255, 0, 0, 0.1);
+        box-shadow: 0 0 100px 50px rgba(138, 79, 45, 0.1);
+        opacity: 1;
+    }
+    20% {
+        border-radius: 30% 70% 70% 30% / 30% 40% 60% 70%;
+        transform: translate(-3%, 2%) scale(1.1);
+        filter: blur(40px);
+        border-color: rgba(180, 0, 0, 0.2);
+        box-shadow: 0 0 80px 40px rgba(150, 50, 30, 0.4);
+        opacity: 1;
+    }
+    40% {
+        border-radius: 50% 50% 50% 50% / 50% 50% 50% 50%;
+        transform: translate(2%, -4%) scale(0.9);
+        background-color: rgba(200, 10, 0, 0.5);
+        filter: blur(25px);
+        border-color: rgba(200, 10, 0, 0.5);
+        box-shadow: 0 0 60px 30px rgba(200, 20, 10, 0.6);
+        opacity: 1;
+    }
+    60% {
+        border-radius: 55% 45% 35% 65% / 65% 45% 55% 35%;
+        transform: translate(-2%, -2%) scale(1);
+        background-color: #1a0500;
+        filter: blur(10px);
+        border-color: rgba(143, 0, 0, 0.5);
+        box-shadow: 0 0 40px 15px rgba(143, 0, 0, 0.5);
+        opacity: 1;
+    }
+    80% {
+        border-radius: 50% 50% 50% 50% / 50% 50% 50% 50%;
+        transform: translate(-2%, -2%) scale(0.9);
+        background-color: #101010;
+        filter: blur(0px);
+        border-color: rgba(255, 30, 0, 0.6);
+        box-shadow: 0 0 130px 20px rgba(255, 30, 0, 0.8), inset 0 0 20px rgba(255, 30, 0, 0.5);
+        opacity: 1;
+    }
+    100% {
+        /* It falls apart */
+        border-radius: 20% 80% 10% 90% / 90% 10% 80% 20%; 
+        background-color: transparent;
+        border-color: transparent;
+        box-shadow: 0 0 150px 50px rgba(255, 30, 0, 0);
+        filter: blur(30px);
+        opacity: 0; 
+    }
+}
+
+#armchair-story .story-container {
+    position: relative;
+    z-index: 10;
+}
+
+#armchair-story .story-text h2 {
+    color: #be722b; 
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.8);
+    letter-spacing: 1px;
+}
+
+#armchair-story .story-text p {
+    color: #A89B92; 
+    text-shadow: 0 1px 5px rgba(0, 0, 0, 0.8);
+}
+
+/* ==========================================
+   4.4. SKY OFFICE BACKGROUND
+   ========================================== */
+#wicked-story {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    background: linear-gradient(180deg, var(--heaven-blue-top) 0%, var(--heaven-blue-bottom) 100%);
+    overflow: hidden;
+    z-index: -1;
+}
+
+#wicked-story .story-text h2 {
+    color: #2C3E50;
+}
+#wicked-story .story-text p {
+    color: #5A6A7A;
+}
+
+/* ==========================================
+   4.5. DIMKA BACKGROUND
+   ========================================== */
+#dimka-story {
+    position: relative;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: 
+        /* 1. Vertical gray lines */
+        linear-gradient(to right, rgba(229,231,235,0.8) 1px, transparent 1px),
+        /* 2. Horizontal gray lines */
+        linear-gradient(to bottom, rgba(229,231,235,0.8) 1px, transparent 1px),
+        /* 3. Violet glooming at the left bottom */
+        radial-gradient(circle 500px at 20% 100%, rgba(0, 120, 60, 0.3), transparent),
+        /* 4. Blue glooming on the right */
+        radial-gradient(circle 500px at 100% 80%, rgba(59,130,246,0.3), transparent);
+    background-size: 
+        48px 48px,
+        48px 48px,
+        100% 100%,
+        100% 100%;
+}
+
+#dimka-story::before {
+    min-height: 100vh;
+    width: 100%;
+    background-color: white;
+    overflow: hidden;
+}
+
+#dimka-story .story-text h2 {
+    color: #005a47;
+    font-weight: 700;
+}
+
+#dimka-story .story-text p {
+    color: #3c485a;
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+/* 
+===============
+--------FOOTERS-------------- 
+===============*/
+
+.desktop-footer {
+    background-color: rgba(0, 0, 0, 0.85);
+    color: #ffffff;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+/* Button calling 
+.bio-btn {
+  background: none;
+  border: 1px solid #c5933d;
+  color: #cc9d4c;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.bio-btn:hover {
+  background: #ca9841;
+  color: rgba(0, 0, 0, 0.85);
+}*/
+
+.footer-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 150px;
+}
+.bio-btn {
+  background: none;
+  border: none;
+  border-bottom: 1px solid rgba(197, 147, 61, 0.4);
+  color: #cc9d4c;
+  padding: 10px 20px;
+  cursor: pointer;
+  font-weight: bold;
+  position: relative;
+  transition: color 0.3s, border-bottom-color 0.3s;
+}
+
+/* 2nd active line */
+.bio-btn::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; /* Right on the lower border */
+  left: 0;
+  width: 100%;
+  height: 2px; /* thickness */
+  background-color: #c5933d;
+  transform: scaleX(0); /* squeezed in center */
+  transition: transform 0.3s ease;
+}
+
+.bio-btn:hover {
+  background: none;
+  color: #fff; /* white explosion on gold */
+  border-bottom-color: transparent;
+}
+
+.bio-btn:hover::after {
+  transform: scaleX(1); /* expands on the whole width */
+}
+
+/* word itself */
+.tooltip {
+  position: relative;
+  cursor: pointer;
+  border-bottom: 1px dotted #ccc; /* underlining */
+}
+
+/* appearing animation */
+.tooltip::after {
+  content: attr(data-tooltip); /* taking text from HTML */
+  position: absolute;
+  left: 50%;
+  bottom: 125%; /* height under the word */
+  transform: translateX(-50%);
+  background-color: #ccc;
+  color: #151515;
+  padding: 5px 10px;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0; /* hidden by default */
+  visibility: hidden;
+  transition: opacity 0.3s;
+  font-size: 1rem;
+}
+
+/* appearance when hovering */
+.tooltip:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Window styles */
+.book-modal {
+  border: none;
+  border-radius: 10px;
+  padding: 25px;
+  background-color: #ffffff;
+  color: #252525;
+  width: 90%;
+  max-width: 800px;
+  box-shadow: 0 5px 10px rgba(65, 65, 65, 0.5);
+  position: fixed; 
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Site background blackening */
+.book-modal::backdrop {
+  background-color: rgba(100, 100, 100, 0.7);
+  backdrop-filter: blur(3px);
+}
+
+.modal-header {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid #5a5a5a;
+  padding-bottom: 10px;
+  margin-bottom: 15px;
+  font-size: clamp(1rem, 1rem + 2dvw, 1.4rem);
+}
+
+.modal-body {
+    font-size: clamp(1rem, 0.85rem + 0.6dvw, 1.4rem);
+    line-height: 1.6;
+}
+
+.close-btn {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #a0a0a0;
+  font-size: 1.8rem;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  color: #c97f00;
+}
+
+/* Window animation */
+.book-modal[open] {
+  animation: fadeIn 0.1s ease-out forwards;
+}
+
+/* Background blackening animation */
+.book-modal[open]::backdrop {
+  animation: fadeInBackdrop 0.1s ease-out forwards;
+}
+
+/* DESKTOP */
+.footer-copyrights {
+    margin-top: 40px;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #919191; 
+    line-height: 1.6;
+}
+
+/* Mobiles */
+.mobile-footer {
+    display: none;
+}
+
+/* Window appearing animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -45%) scale(0.95); /* Smaller and lower */
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1); /* Centered */
+  }
+}
+
+/* Back animation */
+@keyframes fadeInBackdrop {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(2px);
+  }
+}
+
+/* =================================
+RESPONSIVE WEB DESIGN FOR MOBILES
+================================== */
+
+@media (max-width: 900px) {
+    #header-mobile {
+        display: flex; 
+    }
+    #cover-nav {
+        display: none; /* Hide the complex desktop SVG map on mobile */
+    }
+    .story-container {
+        flex-direction: column;
+        gap: 20px;
+    }
+    .story-text {
+        text-align: center;
+    }
+    #header-mobile {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 200;
+    }
+    .mobile-header-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: var(--menu-bg);
+        padding: 15px 20px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        position: relative;
+        z-index: 201;
+    }
+    .mobile-title {
+        font-family: Caveat, sans-serif;
+        font-size: clamp(1.2rem, 0.5rem + 2dvw, 1.8rem);
+        color: var(--text-dark);
+    }
+    .hamburger-btn {
+        width: 30px;
+        height: 22px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        cursor: pointer;
+    }
+    .hamburger-btn span {
+        display: block;
+        height: 3px;
+        width: 100%;
+        background: var(--text-dark);
+        border-radius: 3px;
+        transition: 0.3s;
+    }
+
+    /* Animation of the cross when opening the menu */
+    #mobile-menu-toggle:checked ~ .mobile-header-top .hamburger-btn span:nth-child(1) {
+        transform: translateY(9.5px) rotate(45deg);
+    }
+    #mobile-menu-toggle:checked ~ .mobile-header-top .hamburger-btn span:nth-child(2) {
+        opacity: 0;
+    }
+    #mobile-menu-toggle:checked ~ .mobile-header-top .hamburger-btn span:nth-child(3) {
+        transform: translateY(-9.5px) rotate(-45deg);
+    }
+
+    #nav-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: var(--menu-bg);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 4vh;
+        align-items: center;
+        transform: translateY(-100%);
+        transition: transform 0.4s cubic-bezier(0.77, 0.2, 0.05, 1.0);
+        padding-top: 60px;
+    }
+
+    /* Menu slidign */
+    #mobile-menu-toggle:checked ~ #nav-bar {
+        transform: translateY(0);
+    }
+
+    /* Big links for fat thumbs */
+    .nav-link {
+        width: 100%;
+        text-align: center;
+        display: block;
+        font-size: clamp(1.4rem, 5vw, 2rem);
+        color: var(--text-dark);
+        font-weight: bold;
+        width: 100%;
+        padding: 15px;
+        cursor: pointer;
+    }
+
+    .nav-link:active {
+        opacity: 0.7;
+    }
+    .welcome-overlay {
+        display: none !important;
+        pointer-events: none;
+    }
+
+    /* Mobile sections */
+    .mobile-front,
+    .mobile-footer {
+        display: flex !important;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        
+        position: relative;
+        overflow: hidden;
+        box-sizing: border-box;
+        
+        width: 100% !important;
+        height: 100vh !important; 
+        height: 100dvh !important;
+        
+        background-position: center center !important;
+        background-size: cover !important;
+        background-repeat: no-repeat !important;
+        
+        padding: 24px; 
+    } 
+
+    /* Start */
+    .mobile-front {
+        background-image: url(./img/cover-beginning.webp) !important;
+    }
+
+    /* Final */
+    .mobile-footer {
+        background-image: url(./img/cover-end.webp) !important;
+        justify-content: flex-end;
+        padding: 80px 24px 24px;
+    }
+
+    /*.mobile-footer .bio-btn {
+        background: none;
+        border-bottom: 2px solid #925f26;
+        color: #3a322b;
+        padding: 10px 20px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: 0.3s;
+        border-radius: 10px;
+    }
+
+    .bio-btn:hover {
+    background: #ca9841;
+    color: rgba(0, 0, 0, 0.85);
+    }*/
+
+    .mobile-footer .bio-btn {
+        color: #151515;
+        background: none;
+        border: none;
+        padding: 12px 0;
+        font: inherit;
+        position: relative;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+        transition: color 0.15s ease-out; 
+    }
+
+    .mobile-footer .bio-btn::after {
+        content: '';
+        position: absolute;
+        bottom: 8px;
+        border-radius: 10px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background-color: #151515;
+        transform: none;
+        transition: transform 0.15s ease-out;
+        opacity: 0.3;
+    }
+
+    .mobile-footer .bio-btn:active {
+        color: #353535; 
+    }
+
+    .mobile-footer .bio-btn:active::after {
+        opacity: 1;
+    }
+
+    .mobile-footer p {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.7);
+        font-size: clamp(0.85rem, 0.75rem + 0.4dvw, 1.1rem);
+        font-weight: 400;
+        line-height: 1.6;
+        text-align: center;
+        text-shadow: 0 1px 5px rgba(0, 0, 0, 0.2), 
+                    0 1px 5px rgba(0, 0, 0, 0.4);
+        word-break: break-word;
+        hyphens: auto;
+    }
+
+    .mobile-footer .btn-top-left {
+        position: absolute;
+        bottom: 150px;
+        left: 50px;
+        z-index: 10;
+    }
+
+    .mobile-footer .btn-top-right {
+        position: absolute;
+        bottom: 150px;
+        right: 50px;
+        z-index: 10;
+    }
+
+    .mobile-footer .bio-btn {
+        padding: 12px 22px;
+        font-size: 1.3rem;
+        white-space: nowrap; 
+    }
+
+    .desktop-footer {
+        display: none !important;
+    }
+}
+
+@media (min-aspect-ratio: 3840/2728) {
+    .cover-nav {
+        width: 100vw;
+        height: auto;
+    }
+}
+
+/* For mobiles / tablets */
+@media (max-aspect-ratio: 3840/2728) {
+    .cover-nav {
+        width: auto;
+        height: 100vh;
+    }
+}
